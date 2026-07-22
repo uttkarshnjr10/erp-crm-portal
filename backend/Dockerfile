@@ -2,6 +2,8 @@ FROM node:20-alpine AS build
 
 WORKDIR /usr/src/app
 
+RUN apk add --no-cache openssl
+
 COPY package*.json ./
 COPY prisma ./prisma/
 
@@ -15,6 +17,8 @@ RUN npm run build
 FROM node:20-alpine AS production
 
 WORKDIR /usr/src/app
+
+RUN apk add --no-cache openssl
 
 COPY package*.json ./
 COPY prisma ./prisma/

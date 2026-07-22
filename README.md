@@ -3,7 +3,7 @@ A comprehensive, full-stack Operations Management Portal tailored for wholesale 
 
 ## 🚀 Live Demo
 
-- 🌐 **Live App**: [https://erp-crm-portal.vercel.app](https://erp-crm-portal.vercel.app) *(Update with your actual Vercel URL)*
+- 🌐 **Live App**: [https://erp-crm-portal.vercel.app](https://erp-crm-portal-seven.vercel.app/) 
 - 📡 **API Base**: [https://erp-crm-portal-io1k.onrender.com/api/v1](https://erp-crm-portal-io1k.onrender.com/api/v1)
 
 ## 🔑 Test Credentials

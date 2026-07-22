@@ -1,9 +1,74 @@
-# ERP + CRM Operations Portal
+# Mini ERP + CRM Operations Portal
+A comprehensive, full-stack Operations Management Portal tailored for wholesale and distribution companies to manage customers, inventory, and sales challans efficiently.
 
-## Overview
-A comprehensive Operations Management Portal tailored for wholesale and distribution companies. This system provides role-based access for Admins, Sales, Warehouse, and Accounts staff to manage customers, inventory, and sales challans efficiently.
+## 🚀 Live Demo
 
-## Architecture
+- 🌐 **Live App**: [https://erp-crm-portal.vercel.app](https://erp-crm-portal.vercel.app) *(Update with your actual Vercel URL)*
+- 📡 **API Base**: [https://erp-crm-portal-io1k.onrender.com/api/v1](https://erp-crm-portal-io1k.onrender.com/api/v1)
+
+## 🔑 Test Credentials
+
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@erp.com | Password@123 |
+| Sales | sales@erp.com | Password@123 |
+| Warehouse | warehouse@erp.com | Password@123 |
+| Accounts | accounts@erp.com | Password@123 |
+
+## 🛠 Tech Stack
+
+### Backend
+- **NestJS 10** — Modular architecture with built-in dependency injection, guards, and interceptors for scalable enterprise apps.
+- **TypeScript** — Ensures type safety across the entire codebase and prevents runtime errors.
+- **Prisma ORM** — Provides intuitive, type-safe database queries and seamless schema migrations.
+- **PostgreSQL (Neon)** — Robust relational database handling complex transactions and data integrity.
+- **JWT (Passport)** — Stateless authentication mechanism for secure, scalable role-based access control.
+
+### Frontend
+- **React 18** — Component-based UI library for building dynamic, responsive user interfaces.
+- **TypeScript** — Enforces strict typing, reducing bugs and improving developer experience.
+- **Tailwind CSS 3** — Utility-first CSS framework for rapid, highly customizable UI styling without writing custom CSS.
+- **React Query** — Handles server state, data fetching, caching, and background synchronization effortlessly.
+- **Axios** — Robust HTTP client used with interceptors to automatically attach JWT tokens to requests.
+
+## ✨ Features
+
+- **Auth**
+  - [x] JWT-based login (24h expiry)
+  - [x] Role-Based Access Control (Admin, Sales, Warehouse, Accounts)
+  - [x] Fetch current user profile
+
+- **Customers (CRM)**
+  - [x] Manage customer profiles (Create, Read, Update)
+  - [x] Customer statuses (LEAD, ACTIVE, INACTIVE) and types (RETAIL, WHOLESALE, DISTRIBUTOR)
+  - [x] Add and view paginated follow-up notes
+  - [x] View customer-specific challan summary
+
+- **Products (Inventory)**
+  - [x] Comprehensive product catalog with SKU tracking
+  - [x] Atomic stock adjustments (IN/OUT) with reason tracking
+  - [x] Low stock alerts based on minimum stock threshold
+  - [x] Paginated stock movement history
+  - [x] Soft deletion of products (Admin only)
+
+- **Categories**
+  - [x] Manage product categories
+  - [x] View product count per category
+
+- **Challans (Sales)**
+  - [x] Create Sales Challans with line items
+  - [x] Store point-in-time product snapshots (name, SKU, unit price)
+  - [x] Complex state machine: DRAFT → CONFIRMED → CANCELLED
+  - [x] Atomic stock deduction upon Confirmation via Prisma Transactions
+  - [x] Stock restoration upon Cancellation
+  - [x] Guard against negative stock during confirmation
+  - [ ] PDF export for Challans
+
+- **Dashboard**
+  - [x] Aggregated statistics (total customers, products, challans, low stock count)
+  - [x] Recent challan activity feed
+
+## 🏗 Architecture
 
 ```text
 +-----------------------+       +-----------------------+       +-----------------------+
@@ -12,102 +77,13 @@ A comprehensive Operations Management Portal tailored for wholesale and distribu
 |                       |       |                       |       |                       |
 +-----------------------+       +-----------------------+       +-----------------------+
       |                               |                               |
-      | - React 18 & Vite             | - NestJS 10                   | - PostgreSQL 15
-      | - Tailwind CSS 3              | - Prisma ORM                  | - Persistent Data Volume
-      | - React Query (Caching)       | - JWT Authentication          |
+      | - React 18 & Vite             | - NestJS 10                   | - PostgreSQL (Neon)
+      | - Tailwind CSS 3              | - Prisma ORM                  | - Fully Relational
+      | - React Query (Caching)       | - JWT Authentication          | - ACID Transactions
       | - Axios & Interceptors        | - Class Validator             |
 ```
 
-### Architectural Decisions
-- **NestJS**: Chosen for its robust, scalable architecture, dependency injection, and opinionated module structure, which is ideal for enterprise applications compared to raw Express.
-- **Prisma**: Provides type-safe database queries, auto-generated schemas, and seamless integration with TypeScript and NestJS, avoiding the verbose setup of TypeORM or Sequelize.
-- **React Query**: Handles server state, caching, and background synchronization on the frontend effortlessly.
-- **Stateless Auth (JWT)**: Ensures scalable authentication without session storage overhead, handled via HTTP Bearer tokens.
-
-## Features
-- **Auth Module**: JWT-based login with Role-Based Access Control (RBAC).
-- **Customers (CRM)**: Manage customer details, statuses (LEAD, ACTIVE, INACTIVE), types (RETAIL, WHOLESALE, DISTRIBUTOR), and track follow-up history.
-- **Products (Inventory)**: SKU tracking, stock level monitoring with low stock alerts, and soft deletion.
-- **Inventory Movements**: Atomic stock adjustments tracking IN and OUT movements with reasons and timestamps.
-- **Challans (Sales)**: Complex state machine for challans (DRAFT → CONFIRMED → CANCELLED) with automatic stock deduction on confirmation and stock restoration on cancellation. Includes point-in-time snapshots of products.
-- **Dashboard**: High-level aggregated statistics and recent activities overview.
-
-## Quick Start (Local)
-
-### Prerequisites
-- Node.js 20+
-- PostgreSQL 15+
-- npm
-
-### Backend Setup
-```bash
-cd backend
-npm install
-cp .env.example .env
-# Edit .env with your PostgreSQL credentials
-npx prisma migrate dev --name init
-npx prisma db seed
-npm run start:dev
-```
-
-### Frontend Setup
-```bash
-cd frontend
-npm install
-cp .env.example .env
-npm run dev
-```
-
-### With Docker (Easiest)
-Make sure Docker Desktop is running.
-```bash
-cp backend/.env.example backend/.env
-# Optional: Edit backend/.env to match docker credentials if necessary
-docker-compose up --build
-```
-
-## Test Credentials
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@erp.com | Password@123 |
-| Sales | sales@erp.com | Password@123 |
-| Warehouse | warehouse@erp.com | Password@123 |
-| Accounts | accounts@erp.com | Password@123 |
-
-## API Documentation
-A complete Postman collection is available at:
-`backend/postman/erp-crm-api.postman_collection.json`
-
-Base URL: `http://localhost:3001/api/v1`
-
-## Deployment
-
-### Backend (Railway)
-1. Connect your GitHub repository to Railway.
-2. Add a PostgreSQL database plugin in Railway.
-3. Set the following environment variables:
-   - `DATABASE_URL` (from the Railway Postgres plugin)
-   - `JWT_SECRET` (generate a secure random string)
-   - `PORT` (Railway will assign this, but you can set a default)
-4. Railway will automatically detect the Dockerfile or Node.js environment and deploy.
-
-### Frontend (Vercel)
-1. Import the repository to Vercel.
-2. Select the `frontend` directory as the Root Directory.
-3. Set the Build Command: `npm run build`
-4. Set the Output Directory: `dist`
-5. Set Environment Variables:
-   - `VITE_API_BASE_URL` (URL of your deployed Railway backend API, e.g., `https://your-app.up.railway.app/api/v1`)
-6. Deploy.
-
-### Database (Neon.tech)
-If you prefer a managed serverless Postgres database (like Neon) instead of Railway's plugin:
-1. Create a project on Neon.
-2. Copy the connection string.
-3. Provide the connection string as the `DATABASE_URL` in your backend deployment platform.
-
-## Known Limitations / Assumptions
-- **Invoice PDF Export**: Not implemented in this phase.
-- **Password Reset**: Email-based password recovery is not included.
-- **Advanced Pagination**: Currently supports basic page/limit, but cursor-based pagination might be better for extremely large datasets.
-- **Currency**: Hardcoded to INR (`en-IN` formatting).
+**Key Business Logic Implementations:**
+- **Atomic Transactions**: Challan confirmation uses Prisma `$transaction` to ensure stock is accurately deducted without race conditions.
+- **Negative Stock Protection**: The backend actively verifies that `currentStock >= requestedQuantity` and returns precise errors if constraints are violated.
+- **Historical Accuracy**: Challan items capture product prices and names at the time of creation, ensuring historical data remains intact even if product pricing changes later.

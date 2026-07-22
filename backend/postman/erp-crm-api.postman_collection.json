@@ -1,0 +1,541 @@
+{
+  "info": {
+    "name": "ERP-CRM Portal API",
+    "description": "Complete API collection for the Mini ERP + CRM Operations Portal",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001/api/v1"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@erp.com\",\n  \"password\": \"Password@123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.data && response.data.accessToken) {",
+                  "    pm.collectionVariables.set('token', response.data.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Current User (me)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Arun Sharma\",\n  \"mobile\": \"9876543210\",\n  \"email\": \"arun@sharmatraders.com\",\n  \"businessName\": \"Sharma Traders\",\n  \"gstNumber\": \"27AABCS1429B1Z5\",\n  \"type\": \"WHOLESALE\",\n  \"address\": \"123, MG Road, Mumbai 400001\",\n  \"status\": \"ACTIVE\",\n  \"notes\": \"New wholesale customer from Mumbai\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Customers",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "status", "value": "ACTIVE", "disabled": true },
+                { "key": "type", "value": "WHOLESALE", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Customer by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers", ":id"],
+              "variable": [
+                { "key": "id", "value": "CUSTOMER_UUID_HERE" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers", ":id"],
+              "variable": [
+                { "key": "id", "value": "CUSTOMER_UUID_HERE" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Arun Sharma Updated\",\n  \"address\": \"456, New Address, Mumbai 400002\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Customer Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/:id/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers", ":id", "status"],
+              "variable": [
+                { "key": "id", "value": "CUSTOMER_UUID_HERE" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"INACTIVE\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Add Follow-Up",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/:id/follow-ups",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers", ":id", "follow-ups"],
+              "variable": [
+                { "key": "id", "value": "CUSTOMER_UUID_HERE" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Discussed pricing for bulk order. Follow up next week.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Follow-Up History",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/:id/follow-ups",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers", ":id", "follow-ups"],
+              "variable": [
+                { "key": "id", "value": "CUSTOMER_UUID_HERE" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"LED Desk Lamp\",\n  \"sku\": \"PRD-009\",\n  \"categoryId\": \"CATEGORY_UUID_HERE\",\n  \"unitPrice\": 1299.00,\n  \"currentStock\": 100,\n  \"minStockAlert\": 15,\n  \"location\": \"Rack F1\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "categoryId", "value": "", "disabled": true },
+                { "key": "lowStock", "value": "true", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", ":id"],
+              "variable": [
+                { "key": "id", "value": "PRODUCT_UUID_HERE" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", ":id"],
+              "variable": [
+                { "key": "id", "value": "PRODUCT_UUID_HERE" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Product Name\",\n  \"unitPrice\": 1599.00,\n  \"minStockAlert\": 20\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Product (Soft)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", ":id"],
+              "variable": [
+                { "key": "id", "value": "PRODUCT_UUID_HERE" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Adjust Stock",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/:id/stock-adjust",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", ":id", "stock-adjust"],
+              "variable": [
+                { "key": "id", "value": "PRODUCT_UUID_HERE" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 25,\n  \"movementType\": \"IN\",\n  \"reason\": \"Restocked from supplier\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Stock Movements",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/:id/stock-movements?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", ":id", "stock-movements"],
+              "variable": [
+                { "key": "id", "value": "PRODUCT_UUID_HERE" }
+              ],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "List Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            }
+          }
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Automotive\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Challans",
+      "item": [
+        {
+          "name": "Create Challan (DRAFT)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/challans",
+              "host": ["{{baseUrl}}"],
+              "path": ["challans"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"CUSTOMER_UUID_HERE\",\n  \"items\": [\n    {\n      \"productId\": \"PRODUCT_UUID_1\",\n      \"quantity\": 50\n    },\n    {\n      \"productId\": \"PRODUCT_UUID_2\",\n      \"quantity\": 50\n    }\n  ],\n  \"status\": \"DRAFT\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Challan (CONFIRMED)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/challans",
+              "host": ["{{baseUrl}}"],
+              "path": ["challans"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"CUSTOMER_UUID_HERE\",\n  \"items\": [\n    {\n      \"productId\": \"PRODUCT_UUID_1\",\n      \"quantity\": 10\n    }\n  ],\n  \"status\": \"CONFIRMED\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Challans",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/challans?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["challans"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "status", "value": "DRAFT", "disabled": true },
+                { "key": "customerId", "value": "", "disabled": true },
+                { "key": "search", "value": "", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Challan by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/challans/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["challans", ":id"],
+              "variable": [
+                { "key": "id", "value": "CHALLAN_UUID_HERE" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Confirm Challan (DRAFT → CONFIRMED)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/challans/:id/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["challans", ":id", "status"],
+              "variable": [
+                { "key": "id", "value": "CHALLAN_UUID_HERE" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CONFIRMED\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Cancel Challan",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/challans/:id/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["challans", ":id", "status"],
+              "variable": [
+                { "key": "id", "value": "CHALLAN_UUID_HERE" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CANCELLED\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "stats"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
